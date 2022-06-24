@@ -40,10 +40,8 @@
 
 #include <string>
 
-namespace nc
-{
-    namespace linalg
-    {
+namespace nc{
+    namespace linalg{
 	template <typename T>
  	NdArray<T> swaprows(NdArray<T> in,int a, int b){
  		NdArray <uint32> index = arange<uint32>(0,in.shape().cols);
@@ -121,22 +119,16 @@ namespace nc
             return result;
         }
  
-
-template<typename dtype>
+	template<typename dtype>
 	NdArray<dtype> pinv(const NdArray<dtype>& inArray){
                NdArray <dtype> U,d,V;
                
                nc::linalg::svd(inArray,U,d,V);
-               NdArray <dtype> D_plus = nc::zeros<dtype>(inArray.shape()).transpose(), aux = nc::diag(d), aux1, A_plus;
-               
-               Shape index(aux.shape().cols,aux.shape().cols);
-               aux1 = nc::zeros<dtype>(index);
-               for(uint32 i= 0; i < aux1.shape().rows;i++)
-               	aux1(i,i) = aux[i];
-               
-               aux1 = inv(aux1);
-               for(uint32 i= 0; i < aux1.shape().rows;i++)
-               	D_plus(i,i) = aux1(i,i);
+               NdArray <dtype> D_plus = nc::zeros<dtype>(inArray.shape()).transpose(), A_plus;
+    
+               //d = inv(d);
+               for(uint32 i= 0; i < d.shape().rows;i++)
+               	D_plus(i,i) = 1/d(i,i);
                
                A_plus = V.transpose().dot(D_plus).dot(U.transpose());
                
